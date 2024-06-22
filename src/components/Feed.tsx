@@ -1,19 +1,67 @@
+import { useEffect, useState } from "react";
 import CarouselItem from "./Partials/CarouselItem";
 import PrimaryButton from "./PrimaryButton";
 
 interface Props {
+  results: any;
+  setResults: any;
   canLeaveReview: boolean;
+  canViewScores: boolean;
+  reviewPageLink: string;
+  currentTeamId: string;
+  domain: string;
 }
 
-export const Feed = ({ canLeaveReview }: Props) => {
+export const Feed = ({
+  domain,
+  results,
+  setResults,
+  canLeaveReview,
+  canViewScores,
+  reviewPageLink,
+  currentTeamId,
+}: Props) => {
+  const preferences = results?.preferences;
+  const [processing, setProcessing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(results.next_page_url ? true : false);
+  const [reviews, setReviews] = useState(results?.data ?? []);
+
+  const handleLoadMore = (e) => {
+    e.preventDefault();
+    setProcessing(true);
+
+    if (results.next_page_url) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+
+      fetch(`${domain}/reviews/${currentTeamId}?page=${nextPage}`) // Use the nextPage variable inside the fetch call
+        .then((response) => response.json())
+        .then((data) => {
+          setResults(data);
+          setReviews((prevState) => [...prevState, ...data.data]);
+          setHasMore(!!data.next_page_url);
+          setProcessing(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
+          setProcessing(false);
+        });
+    }
+  };
+
   return (
     <>
       <div className="absolute p-10 top-full left-0 right-0 bg-white dark:bg-black dark:text-white">
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="w-12 h-12 rounded-full bg-green"></span>
+            <img
+              src={preferences?.logo}
+              alt={"Logo"}
+              className={"w-6 h-6 rounded-full"}
+            />
             <span className="flex flex-col">
-              <span className="font-bold">4.8</span>
+              <span className="font-bold">{results.averageRating}</span>
               <span className="flex items-center gap-2">
                 <svg
                   width="16"
@@ -27,7 +75,9 @@ export const Feed = ({ canLeaveReview }: Props) => {
                     fill="#FFD51A"
                   />
                 </svg>
-                <span className="text-lightGray">22 Reviews</span>
+                <span className="text-lightGray">
+                  {results.totalReviews} Reviews
+                </span>
               </span>
             </span>
           </div>
@@ -36,58 +86,56 @@ export const Feed = ({ canLeaveReview }: Props) => {
         <div className="my-10">
           {canLeaveReview ? (
             <div className="flex justify-center">
-              <PrimaryButton
-                icon={
-                  <svg
-                    width="21"
-                    height="22"
-                    viewBox="0 0 21 22"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="fill-white dark:fill-black"
-                  >
-                    <path
-                      d="M8.00902 5.23233C9.11734 3.24411 9.6715 2.25 10.5 2.25C11.3285 2.25 11.8827 3.24411 12.991 5.23233L13.2777 5.7467C13.5927 6.31169 13.7501 6.59419 13.9957 6.78058C14.2412 6.96697 14.547 7.03616 15.1586 7.17454L15.7154 7.30052C17.8676 7.78749 18.9437 8.03097 19.1998 8.85426C19.4558 9.67756 18.7222 10.5354 17.2549 12.2512L16.8753 12.6951C16.4584 13.1826 16.2499 13.4264 16.1561 13.728C16.0623 14.0296 16.0939 14.3548 16.1569 15.0054L16.2143 15.5976C16.4361 17.8868 16.547 19.0314 15.8767 19.5402C15.2065 20.049 14.1989 19.5851 12.1838 18.6573L11.6625 18.4172C11.0898 18.1536 10.8035 18.0217 10.5 18.0217C10.1965 18.0217 9.91019 18.1536 9.33755 18.4172L8.81621 18.6573C6.80109 19.5851 5.79353 20.049 5.12325 19.5402C4.45298 19.0314 4.56389 17.8868 4.78572 15.5976L4.84311 15.0054C4.90615 14.3548 4.93767 14.0296 4.84388 13.728C4.75009 13.4264 4.54162 13.1826 4.12468 12.6951L3.74509 12.2512C2.27784 10.5354 1.54422 9.67756 1.80024 8.85426C2.05627 8.03097 3.13237 7.78749 5.28459 7.30053L5.8414 7.17454C6.45299 7.03616 6.75879 6.96697 7.00433 6.78058C7.24986 6.59419 7.40733 6.31169 7.72228 5.7467L8.00902 5.23233Z"
-                      fill="current"
-                    />
-                  </svg>
+              <a
+                target={"_blank"}
+                href={reviewPageLink}
+                className={
+                  "inline-flex items-center justify-center gap-3 px-4 py-3 bg-gray-800 border border-transparent rounded-lg font-medium text-lg text-white hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
                 }
-                disabled={false}
-                processing={false}
-                className={""}
-                iconorder={undefined}
-                onClick={undefined}
               >
-                Leave a review
-              </PrimaryButton>
+                <svg
+                  width="21"
+                  height="22"
+                  viewBox="0 0 21 22"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="fill-white dark:fill-black"
+                >
+                  <path
+                    d="M8.00902 5.23233C9.11734 3.24411 9.6715 2.25 10.5 2.25C11.3285 2.25 11.8827 3.24411 12.991 5.23233L13.2777 5.7467C13.5927 6.31169 13.7501 6.59419 13.9957 6.78058C14.2412 6.96697 14.547 7.03616 15.1586 7.17454L15.7154 7.30052C17.8676 7.78749 18.9437 8.03097 19.1998 8.85426C19.4558 9.67756 18.7222 10.5354 17.2549 12.2512L16.8753 12.6951C16.4584 13.1826 16.2499 13.4264 16.1561 13.728C16.0623 14.0296 16.0939 14.3548 16.1569 15.0054L16.2143 15.5976C16.4361 17.8868 16.547 19.0314 15.8767 19.5402C15.2065 20.049 14.1989 19.5851 12.1838 18.6573L11.6625 18.4172C11.0898 18.1536 10.8035 18.0217 10.5 18.0217C10.1965 18.0217 9.91019 18.1536 9.33755 18.4172L8.81621 18.6573C6.80109 19.5851 5.79353 20.049 5.12325 19.5402C4.45298 19.0314 4.56389 17.8868 4.78572 15.5976L4.84311 15.0054C4.90615 14.3548 4.93767 14.0296 4.84388 13.728C4.75009 13.4264 4.54162 13.1826 4.12468 12.6951L3.74509 12.2512C2.27784 10.5354 1.54422 9.67756 1.80024 8.85426C2.05627 8.03097 3.13237 7.78749 5.28459 7.30053L5.8414 7.17454C6.45299 7.03616 6.75879 6.96697 7.00433 6.78058C7.24986 6.59419 7.40733 6.31169 7.72228 5.7467L8.00902 5.23233Z"
+                    fill="current"
+                  />
+                </svg>
+                <span>Leave a review</span>
+              </a>
             </div>
           ) : null}
 
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3">
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
-            <CarouselItem />
+            {reviews?.map((review, index) => {
+              return (
+                <CarouselItem
+                  review={review}
+                  canViewScores={canViewScores}
+                  key={index}
+                />
+              );
+            })}
           </div>
 
-          <div className="flex justify-center">
+          <div className="mt-3 flex justify-center">
             <PrimaryButton
+              onClick={handleLoadMore}
+              disabled={!hasMore}
+              processing={processing}
               className="px-6 py-2 font-semibold border border-darkGray rounded-lg"
-              disabled={false}
-              processing={false}
               icon={
                 <svg
+                  className="w-6 h-6 border-white dark:border-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6 fill-white dark:fill-black"
                 >
                   <path
                     strokeLinecap="round"
@@ -96,8 +144,6 @@ export const Feed = ({ canLeaveReview }: Props) => {
                   />
                 </svg>
               }
-              iconorder={undefined}
-              onClick={undefined}
             >
               Show more
             </PrimaryButton>
