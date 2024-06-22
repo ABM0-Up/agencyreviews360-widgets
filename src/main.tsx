@@ -3,7 +3,7 @@ import App from "./App.tsx";
 import "./assets/css/index.css";
 import { createRoot } from "react-dom/client";
 
-const div = document.getElementById("agencyreviews360-widgets")!;
+const div = document.getElementById("agencyreviews360-widget")!;
 const domain = "https://agencyreviews360.com";
 
 createRoot(div).render(
