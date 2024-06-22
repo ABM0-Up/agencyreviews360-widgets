@@ -8,7 +8,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "index.ts"),
       name: "agencyreviews360-widgets",
-      fileName: (format) => `index.${format}.js`,
+      fileName: "index",
+      formats: ["umd"],
     },
     rollupOptions: {
       external: ["react", "react-dom"],
@@ -17,10 +18,17 @@ export default defineConfig({
           react: "React",
           "react-dom": "ReactDOM",
         },
+        name: "agencyreviews360-widgets",
+        format: "umd",
+        dir: "dist",
+        entryFileNames: "index.js",
       },
     },
     sourcemap: true,
     emptyOutDir: true,
   },
   plugins: [react(), dts()],
+  define: {
+    "process.env": {},
+  },
 });

@@ -1,12 +1,12 @@
 import Rating from "react-rating";
 
-const CarouselItem = ({ review, canViewScores }) => {
+const CarouselItem = ({ domain, review, canViewScores }) => {
   return (
     <div className="flex flex-col bg-slate dark:bg-black dark:text-white p-4 rounded-lg border border-slate dark:border-white">
       <div className="flex items-center gap-3">
         <div className="flex gap-3 items-center w-fit h-10 bg-white  dark:bg-black dark:text-white rounded-lg border border-grayStroke dark:border-white px-2">
           <img
-            src={"/storage/logos/" + review?.source?.toLowerCase() + ".png"}
+            src={`${domain}/storage/logos/${review.source.toLowerCase()}.png`}
             alt={review.source}
             className={"w-6 h-6 rounded-full"}
           />

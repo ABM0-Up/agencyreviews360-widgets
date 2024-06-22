@@ -1,12 +1,18 @@
 import BadgeCard from "./Partials/BadgeCard";
 
 interface Props {
+  domain: string;
   reviews: any;
   canLeaveReview: boolean;
   reviewPageLink: string;
 }
 
-export const Badge = ({ reviews, canLeaveReview, reviewPageLink }: Props) => {
+export const Badge = ({
+  domain,
+  reviews,
+  canLeaveReview,
+  reviewPageLink,
+}: Props) => {
   return (
     <>
       <div className="absolute p-10 top-full left-0 right-0 bg-white dark:bg-black dark:text-white">
@@ -15,6 +21,7 @@ export const Badge = ({ reviews, canLeaveReview, reviewPageLink }: Props) => {
             return (
               <BadgeCard
                 key={index}
+                domain={domain}
                 review={review}
                 reviewPageLink={reviewPageLink}
                 canLeaveReview={canLeaveReview}

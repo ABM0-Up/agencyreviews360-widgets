@@ -4,7 +4,7 @@ import "./assets/css/index.css";
 import { createRoot } from "react-dom/client";
 
 const div = document.getElementById("agencyreviews360-widgets")!;
-const domain = "https://agencyreviews360.com/api";
+const domain = "https://agencyreviews360.com";
 
 createRoot(div).render(
   <React.StrictMode>

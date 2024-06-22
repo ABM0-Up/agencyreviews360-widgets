@@ -40,7 +40,7 @@ function App({
 
   useEffect(() => {
     axios
-      .get(`${domain}/reviews/${campaignId}`)
+      .get(`${domain}/api/reviews/${campaignId}`)
       .then((res) => {
         setReviews(res.data);
         setProcessing(false);
@@ -53,7 +53,7 @@ function App({
 
   useEffect(() => {
     axios
-      .get(`${domain}/badge/reviews/${campaignId}`)
+      .get(`${domain}/api/badge/reviews/${campaignId}`)
       .then((res) => {
         setReviewsStats(res.data);
         setProcessing(false);
@@ -86,12 +86,14 @@ function App({
             <Video />
           ) : state === "Badge" ? (
             <Badge
+              domain={domain}
               reviews={reviewsStats}
               canLeaveReview={canLeaveReview}
               reviewPageLink={reviewsStats?.reviewLink?.full_review_page_url}
             />
           ) : state === "Carousel" ? (
             <Carousel
+              domain={domain}
               results={reviews}
               canLeaveReview={canLeaveReview}
               canViewScores={canViewScores}

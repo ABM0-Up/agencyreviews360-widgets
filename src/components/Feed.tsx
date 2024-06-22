@@ -8,7 +8,7 @@ interface Props {
   canLeaveReview: boolean;
   canViewScores: boolean;
   reviewPageLink: string;
-  currentTeamId: string;
+  currentTeamId: number;
   domain: string;
 }
 
@@ -35,7 +35,7 @@ export const Feed = ({
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
 
-      fetch(`${domain}/reviews/${currentTeamId}?page=${nextPage}`) // Use the nextPage variable inside the fetch call
+      fetch(`${domain}/api/reviews/${currentTeamId}?page=${nextPage}`)
         .then((response) => response.json())
         .then((data) => {
           setResults(data);
@@ -56,7 +56,7 @@ export const Feed = ({
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src={preferences?.logo}
+              src={`${domain}/${preferences?.logo}`}
               alt={"Logo"}
               className={"w-6 h-6 rounded-full"}
             />
@@ -114,6 +114,7 @@ export const Feed = ({
             {reviews?.map((review, index) => {
               return (
                 <CarouselItem
+                  domain={domain}
                   review={review}
                   canViewScores={canViewScores}
                   key={index}

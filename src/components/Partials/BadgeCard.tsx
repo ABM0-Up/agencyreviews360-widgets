@@ -1,12 +1,18 @@
 import Rating from "react-rating";
 
 interface Props {
+  domain: string;
   review: any;
   reviewPageLink: string;
   canLeaveReview: boolean;
 }
 
-const BadgeCard = ({ review, reviewPageLink, canLeaveReview }: Props) => {
+const BadgeCard = ({
+  domain,
+  review,
+  reviewPageLink,
+  canLeaveReview,
+}: Props) => {
   return (
     <div
       className={`bg-slate dark:bg-black dark:text-white border border-slate dark:border-white p-2 md:p-4 ${
@@ -16,7 +22,7 @@ const BadgeCard = ({ review, reviewPageLink, canLeaveReview }: Props) => {
       <div className="flex justify-between">
         <div className="flex gap-3">
           <img
-            src={"/storage/logos/" + review.source.toLowerCase() + ".png"}
+            src={`${domain}/storage/logos/${review.source.toLowerCase()}.png`}
             alt={review.source}
             className={"w-11 h-11 rounded-full"}
           />

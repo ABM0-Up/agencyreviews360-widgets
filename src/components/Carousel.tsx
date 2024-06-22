@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 interface Props {
+  domain: string;
   results: any;
   canLeaveReview: boolean;
   canViewScores: boolean;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const Carousel = ({
+  domain,
   results,
   canLeaveReview,
   canViewScores,
@@ -119,7 +121,7 @@ export const Carousel = ({
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src={preferences.logo}
+              src={`${domain}/${preferences?.logo}`}
               alt={"Logo"}
               className={"w-6 h-6 rounded-full"}
             />
@@ -205,6 +207,7 @@ export const Carousel = ({
             {results?.data?.map((review, index) => {
               return (
                 <CarouselItem
+                  domain={domain}
                   review={review}
                   canViewScores={canViewScores}
                   key={index}
